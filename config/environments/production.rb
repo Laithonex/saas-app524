@@ -1,7 +1,9 @@
 Rails.application.configure do
    
   # devise says to define default url
-  config.action_mailer.default_url_options = { :host => 'secure.simple-milia-app.com', :protocol => 'https' }
+  config.action_mailer.default_url_options = { :host => 'saas-app-524.herokuapp.com', :protocol => 'https' }
+  config.action_mailer.delivery_method = :smtp
+
 
   ActionMailer::Base.delivery_method = :smtp
 
