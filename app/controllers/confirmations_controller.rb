@@ -64,11 +64,11 @@ class ConfirmationsController < Milia::ConfirmationsController
             new_user_session_path
         end
     end
-    
+
     private
 
     def set_confirmable()
-        @confirmable = User.find_or_initialize_with_error_by(:confirmation_token, confirmation_token)
+        @confirmable = User.find_or_initialize_with_error_by(:confirmation_token, params[:confirmation_token])
       end
 
 end
