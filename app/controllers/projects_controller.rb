@@ -6,7 +6,9 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.all
+    # @project = Project.all
+    @projects = Project.by_plan_and_tenant(params[:tenant_id])
+
   end
 
   # GET /projects/1
@@ -31,7 +33,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       if @project.save
         format.html { redirect_to root_url, notice: 'Project was successfully created.' }
-        format.json { render :show, status: :created, location: @project }
+        # format.json { render :show, status: :created, location: @project }
       else
         format.html { render :new }
         # format.json { render json: @project.errors, status: :unprocessable_entity }
@@ -80,7 +82,7 @@ class ProjectsController < ApplicationController
 
     def verify_tenant
       unless params[:tenant_id] == Tenant.current_tenant_id.to_s
-        redirect_to root_path, flash: {error: "you are not authorized to acess any orginsation other then your own"}
+        redirect_to :root, flash: {error: "you are not authorized to acess any orginsation other then your own"}
       end
     end
 end
