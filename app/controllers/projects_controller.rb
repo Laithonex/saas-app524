@@ -6,14 +6,15 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    # @project = Project.all
-    @projects = Project.by_plan_and_tenant(params[:tenant_id])
+    @project = Project.all
 
   end
 
   # GET /projects/1
   # GET /projects/1.json
   def show
+    @projects = Project.by_plan_and_tenant(params[:tenant_id])
+
   end
 
   # GET /projects/new
