@@ -1,27 +1,24 @@
 class Artifact < ApplicationRecord
 
+  # has_one_attached :image
   before_save :upload_to_s3
-  
   attr_accessor :upload
-  
   belongs_to :project
-
-
   MAX_FILESIZE = 10.megabytes
-  
   validates_presence_of :name, :upload
   validates_uniqueness_of :name
-  
-  
   validate :uploaded_file_size
   
-
   private
 
   def upload_to_s3
-    s3 = Aws::S3::Resource.new
+    s3 = Aws::S3::Resource.new(
+      region:Rails.application.credentials.dig(:aws, :REGION), 
+      access_key_id: Rails.application.credentials.dig(:aws, :ACCESS_KEY_ID),
+      secret_access_key: Rails.application.credentials.dig(:aws, :SECRET_ACCESS_KEY)
+    )
     tenant_name = Tenant.find(Thread.current[:tenant_id]).name
-    obj = s3.bucket(ENV['AWS_S3_BUCKET']).object("#{tenant_name}/#{upload.original_filename}")
+    obj = s3.bucket(Rails.application.credentials.dig(:aws, :S3_BUCKET)).object("#{tenant_name}/#{upload.original_filename}")
     obj.upload_file(upload.path, acl:'public-read')
     self.key = obj.public_url
   end

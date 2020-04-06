@@ -7,7 +7,7 @@
       <th><%= model_class.human_attribute_name(:key) %></th>
       <th><%=t '.actions', :default => t("helpers.actions") %></th>
     </tr>
-        <%= artifacts.each do |artifact| %>
+        <% artifacts.each do |artifact| %>
   </thead>
   <tbody>
       <tr>
