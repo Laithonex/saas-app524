@@ -1,13 +1,14 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy]
+  before_action :set_project, only: [:show, :edit, :update, :destroy, :users, :add_user]
   before_action :set_tenant, only: [:show, :edit, :update, :destroy, :new, :create]
   before_action :verify_tenant
 
   # GET /projects
   # GET /projects.json
   def index
-    @project = Project.all
-    # @projects = Project.by_plan_and_tenant(params[:tenant_id])
+    # @project = Project.all
+
+    @projects = Project.by_user_plan_and_tenant(params[:tenant_id], current_user)
 
   end
 
@@ -30,6 +31,7 @@ class ProjectsController < ApplicationController
   # POST /projects.json
   def create
     @project = Project.new(project_params)
+    @project.users << current_user
 
     respond_to do |format|
       if @project.save
@@ -67,6 +69,26 @@ class ProjectsController < ApplicationController
   end
 
   private
+    def users
+      @project_users = (@project.users + (User.where(tenant_id: @tenant.id, is_admin: true))) - [current_user]
+      @other_users = @tenant.users.where(tenant_id: @tenant.id, is_admin: false) - (@project_users + [current_user])
+
+    end
+    def add_users
+      @project_user = UserProject.new(user_id: params[:user_id], project_id: @project.id)
+
+      respond_to do |format|
+        if @project_user.save
+          format.html { redirect_to users_tenant_project_url(id: @project.id, tenant_id: @project.tenant_id), 
+            notice: "User was secessfully added to project"}
+
+        else
+          format.html { redirect_to users_tenant_project_url(id: @project.id, tenant_id: @project.tenant_id), 
+            error: "User was not added to project"}
+        end
+      end
+      
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_project
       @project = Project.find(params[:id])
