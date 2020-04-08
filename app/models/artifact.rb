@@ -13,7 +13,7 @@ class Artifact < ApplicationRecord
 
   def upload_to_s3
     s3 = Aws::S3::Resource.new(
-      region:Rails.application.credentials.dig(:aws, :REGION), 
+      region: Rails.application.credentials.dig(:aws, :REGION), 
       access_key_id: Rails.application.credentials.dig(:aws, :ACCESS_KEY_ID),
       secret_access_key: Rails.application.credentials.dig(:aws, :SECRET_ACCESS_KEY)
     )

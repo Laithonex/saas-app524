@@ -10,8 +10,7 @@ gem 'pg', '>= 0.18', '< 2.0'
 gem 'devise'
 gem 'milia'
 gem 'aws-sdk'
-gem 'fog-aws'
-
+gem 'stripe'
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
 # Use SCSS for stylesheets
@@ -30,6 +29,7 @@ gem 'jquery-rails'
 gem 'twitter-bootstrap-rails'
 gem 'devise-bootstrap-views'
 gem 'bootstrap-datepicker-rails'
+
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password

@@ -1,6 +1,10 @@
+<script language="JavaScript">
+Stripe.setPublishableKey("<%= ENV['STRIPE_TEST_PUBLISHABLE_KEY'] %>");
+</script>
+
 <h1><%= t('.sign_up') %></h1>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { role: "form", class: 'cc_form'}) do |f| %>
   <%= bootstrap_devise_error_messages! %>
 
   <div class="form-group">
@@ -30,14 +34,59 @@
     </div>
     <div class="form-group col-md-6 no-right-padding">
       <%= w.label :plan %>
+      <span class='description'>Please choose your plan</span>
+
       <%= w.select :plan, options_for_select(Plan.options, params[:plan]),{}, required: true, class: "form-control" %>
     </div>
   <% end %>
+
+
+  <%= fields_for( :payment ) do |p| %>
+    <div class="row col-md-12">
+        <div class="form-group col-md-4 no-left-padding">
+          <%= p.label :card_number, "Card Number", data: { stripe: 'label' } %>
+          <%= p.text_field :card_number, class: "form-control", required: true,
+          data: { stripe: 'number' } %>
+        </div>
+        <div class="form-group col-md-2">
+          <%= p.label :card_cvv, "Card CVV", data: { stripe: 'label' } %>
+          <%= p.text_field :card_cvv, class: "form-control", required: true,
+          data: { stripe: 'cvv' } %>
+        </div>
+      <div class="form-group col-md-6">
+        <div class="col-md-12">
+          <%= p.label :card_expires, "Card Expires", data: { stripe: 'label' } %>
+        </div>
+        <div class="col-md-3">
+          <%= p.select :card_expires_month,
+          options_for_select(Payment.month_options),
+          { include_blank: 'Month' },
+          "data-stripe" => "exp-month",
+          class: "form-control", required: true %>
+        </div>
+        <div class="col-md-3">
+          <%= p.select :card_expires_year,
+          options_for_select(Payment.year_options.push),
+          { include_blank: 'Year' },
+          class: "form-control",
+          data: { stripe: "exp-year"}, required: true %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  
 
 
   <div class="form-group">
     <%= f.submit t('.sign_up'), class: 'btn btn-primary' %>
   </div>
 <% end %>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="5H9NQWDCHM8G8">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+
 
 <%= render 'devise/shared/links' %>
